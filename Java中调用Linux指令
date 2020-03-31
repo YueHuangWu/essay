@@ -1,0 +1,10 @@
+在Java中调用linux指令
+private static Process p = null;
+p = Runtime.getRuntime().exec("notepad.exe");
+p.waitFor();         
+System.out.println("--------------------------------------------我被执行了");
+waitFor()会等待当前线程完成后，在执行后续操作。
+
+上述操作，会打开 notepad，打开一个记事本，但是如果记事本程序不关闭，后面的输出语句无法执行。
+当记事本关闭后，输出语句执行。
+
