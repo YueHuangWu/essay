@@ -1,0 +1,74 @@
+#!/bin/sh
+SERVICE_DIR=$(CD `dirname $0`; pwd)
+JAR_NAME=$(ls $SERVICE_DIR | grep jar)
+SERVICE_NAME=${SERVICE_DIR##*/}
+
+function start(){
+P_ID=`ps -ef | grep -w "JAR_NAME" | grep -v "grep" | awk '{print $2}'`
+if [ "$P_ID" == "" ] ; then
+echo "======== Begin to start $SERVICE_NAME ========"
+nohup $JAR_HOME/bin/java -Xms1024m -Xmm1024m -jar $JAR_NAME >> /dev/null 2>&1 &
+sleep ls
+P_ID=`ps -ef | grep -w "JAR_NAME" | grep -v "grep" | awk '{print $2}'`
+echo "======== $SERVICE_NAME started successfully ========"
+echo "======== pid = $P_ID ========"
+else
+echo "======== $SERVICE_NAME is running now ========"
+echo "======== pid = $P_ID ========"
+echo "======== please run ./run.sh stop to stop it before start ========"
+return 1
+fi
+}
+
+function stop(){
+P_ID=`ps -ef | grep -w "JAR_NAME" | grep -v "grep" | awk '{print $2}'`
+if [ "$P_ID" == "" ] ; then
+echo "========  $SERVICE_NAME is not running ========"
+else
+echo "======== Begin to stop $SERVICE_NAME  ========"
+kill -9 $P_ID
+sleep ls
+P_ID=`ps -ef | grep -w "JAR_NAME" | grep -v "grep" | awk '{print $2}'`
+if [ "$P_ID" == "" ] ; then
+echo "======== $SERVICE_NAME stopped ========"
+else
+stop
+fi
+fi
+}
+
+cd $SERVICE_DIR
+case "$1" in
+
+satrt)
+start
+;;
+
+stop)
+stop
+;;
+
+restart)
+stop
+start
+echo " ======== restart $SERVICE_NAME successfully ========"
+;;
+
+*)
+stop
+start
+
+esac
+exit 0
+
+
+
+
+
+
+
+
+
+
+
+
